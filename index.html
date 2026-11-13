@@ -11,12 +11,16 @@
 html{height:100%}
 body{margin:0;min-height:100%;background:var(--bg);color:var(--tx);font-family:'Sora',system-ui,sans-serif;font-weight:300;overflow-x:hidden}
 .bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:radial-gradient(60% 50% at 15% 20%,rgba(255,140,40,.22),transparent 70%),radial-gradient(50% 45% at 85% 75%,rgba(255,90,20,.18),transparent 70%),linear-gradient(160deg,#150d08,#07090c 70%)}
-.bg .scene{position:absolute;inset:-8%;background-size:cover;background-position:center;filter:blur(9px) brightness(.78) saturate(.9);opacity:.58;transform:scale(1.1);animation:sceneCycle 36s ease-in-out infinite}
-.bg .scene-1{background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80');animation-delay:0s}
-.bg .scene-2{background-image:url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1600&q=80');animation-delay:-24s}
-.bg .scene-3{background-image:url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=80');animation-delay:-12s}
-@keyframes sceneCycle{0%,26%{opacity:.62;transform:scale(1.1)}33%,100%{opacity:0;transform:scale(1.14)}}
-.bg i{position:absolute;border-radius:50%;filter:blur(40px);background:radial-gradient(circle,rgba(255,190,100,.55),transparent 65%);animation:bk 20s ease-in-out infinite alternate}
+.bg .scene{position:absolute;inset:-5%;z-index:0;background-size:cover;background-position:center;filter:blur(4px) brightness(.68) saturate(.9);opacity:0;transform:scale(1.06);transition:opacity 5s ease-in-out}
+.bg .scene.active{opacity:.68}
+.bg .scene-1{background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80')}
+.bg .scene-2{background-image:url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1600&q=80')}
+.bg .scene-3{background-image:url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=80')}
+.bg .scene-4{background-image:url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1600&q=80')}
+.bg .scene-5{background-image:url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80')}
+.bg .scene-6{background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')}
+.bg::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(160deg,rgba(15,9,5,.48),rgba(4,7,10,.58))}
+.bg i{position:absolute;z-index:2;border-radius:50%;filter:blur(40px);background:radial-gradient(circle,rgba(255,190,100,.55),transparent 65%);animation:bk 20s ease-in-out infinite alternate}
 .bg i:nth-of-type(1){width:260px;height:260px;left:6%;top:10%}.bg i:nth-of-type(2){width:200px;height:200px;right:8%;top:6%;animation-delay:-7s}.bg i:nth-of-type(3){width:320px;height:320px;left:40%;bottom:-8%;animation-delay:-12s;opacity:.6}
 @keyframes bk{to{transform:translate(40px,-30px) scale(1.2)}}
 main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:20px 18px 40px}
@@ -110,11 +114,11 @@ input:not([type]),textarea{padding-right:38px!important}
 .fm{position:fixed;z-index:60;width:28px;height:28px;padding:0;border-radius:50%;font-size:.8rem}
 .sk{width:100%;border-radius:12px;background:rgba(0,0,0,.25);display:block}
 @media(max-width:1000px){.layout{grid-template-columns:1fr}.orbwrap{order:-1}#web{display:none}.stats{grid-template-columns:repeat(2,1fr)}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important}.bg .scene{opacity:0}.bg .scene-1{opacity:.62}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.bg .scene{transition:none}.bg .scene-1.active{opacity:.68}}
 </style>
 </head>
 <body>
-<div class="bg"><span class="scene scene-1"></span><span class="scene scene-2"></span><span class="scene scene-3"></span><i></i><i></i><i></i></div>
+<div class="bg"><span class="scene scene-1 active"></span><span class="scene scene-2"></span><span class="scene scene-3"></span><span class="scene scene-4"></span><span class="scene scene-5"></span><span class="scene scene-6"></span><i></i><i></i><i></i></div>
 <main id="main">
 <svg id="web"></svg>
 <header>
@@ -194,6 +198,8 @@ input:not([type]),textarea{padding-right:38px!important}
 </main>
 <script>
 const CTX=`You are Jarvis, Parker Bingaman’s personal academic planner (11th grade), like a sharp friendly study partner with light wit and casual sarcasm. Be direct and concise, no filler. Classes: AP Calc AB/BC (daily), AP CSA (M,T,Th,F), AP Chem (M,T,Th,F), APUSH (M,T,W,F), Web Dev (virtual). School 8am-4pm; occasional volunteering and band in afternoons. Best focus 4-8pm, worst 8pm onward. Prefers practice problems, quick review, short sessions. Recurring: Web Dev week’s assignments due Fridays 4pm; AP Chem review HW due Tuesday 4pm the week of that unit’s test; Calc and APUSH review HW due before each unit test. Assume 3 free hours weekdays, 5 weekends. Never overschedule. Use time blocks with specific start times and short breaks. Flag conflicts early. End any planning with a Status Snapshot (done, pending with deadlines, what to do first next time). Apply his corrections for the rest of the chat.`;
+const scenes=[...document.querySelectorAll(".bg .scene")];let sceneIndex=0;
+setInterval(()=>{const previous=scenes[sceneIndex];sceneIndex=(sceneIndex+1)%scenes.length;const next=scenes[sceneIndex];next.classList.add("active");setTimeout(()=>previous.classList.remove("active"),5000)},10*60*1000);
 const CLUBS={"Beta Club":8,"Tri-M":12,"NHS":20,"NEHS":11,"Science NHS":10,"NTHS":8};
 let S={pages:[],cur:"home",tasks:[],exams:[],notes:[],clubs:{},chat:[],focus:{}};
 try{const r=localStorage.getItem("sb2");if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
